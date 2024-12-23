@@ -1,15 +1,39 @@
 
-## Contributing
+## Projeto API-CREDITO
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+API que simula ofertas de crédito para clientes cadastrados no banco usando framework Laravel no backend e documentação com swagger
 
-## Code of Conduct
+### Configuracao do Projeto
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Para rodar o projeto é necessário configura o banco de dados no .env
+``env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=simulacao
+DB_USERNAME=root
+DB_PASSWORD=
+``
+Após de configuração do Projeto rode o comando abaixo para povoar o banco de dados
 
-## Security Vulnerabilities
+```php
+php artisan db:seed
+```
+## Documentação
+A API está documenta usando swagger na 
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+http://127.0.0.1:8000/api/documentation
+
+Para acessar a simulação  de credito acesse a url
+http://127.0.0.1:8000/api/simulacao/credito
+
+
+Para acessar a simulação  de ofetas de credito acesse a url
+http://127.0.0.1:8000/api/simulacao/simula-oferta
+
+## Segurança e vulnerabilidades
+
+Se você descobrir uma brecha de segurança e ou vulnerabilidade neste projeto, por favor envie um e-mail para Luiz Santos via [luizcsdev@gmail.com](mailto:luizcsdev@gmail.com). 
 
 ## License
 
