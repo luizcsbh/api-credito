@@ -6,14 +6,14 @@ API que simula ofertas de crédito para clientes cadastrados no banco usando fra
 ### Configuracao do Projeto
 
 Para rodar o projeto é necessário configura o banco de dados no .env
-``env
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=simulacao
 DB_USERNAME=root
 DB_PASSWORD=
-``
+```
 Após de configuração do Projeto rode o comando abaixo para povoar o banco de dados
 
 ```php
