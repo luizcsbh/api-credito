@@ -2,90 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Modalidade;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Services\ModalidadeService;
+use App\Http\Resources\ModalidadeResource;
+use App\Http\Requests\{StoreModalidadeRequest, UpdateModalidadeRequest};
+
 
 class ModalidadeController extends Controller
 {
-    /**
-     * Lista todas as modalidades.
-     */
+    protected $modalidadeService;
+
+    public function __construct(ModalidadeService $modalidadeService)
+    {
+        $this->modalidadeService = $modalidadeService;
+    }
+
     public function index()
     {
-        $modalidades = Modalidade::all();
+       try {
+            $modalidades = $this->modalidadeService->getAllModalidade();
 
-        if ($modalidades->isEmpty()) {
-            return response()->json(['message' => 'Não há modalidades cadastrados.'], 404);
+            if ($modalidades->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma modalidade encontrada.'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => ModalidadeResource::collection($modalidades)
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar as modalidades.',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return response()->json($modalidades);
     }
-
-    /**
-     * Exibe uma modalidade específica pelo ID.
-     */
     public function show($id)
     {
-        $modalidade = Modalidade::with('instituicao')->find($id);
-
-        if (!$modalidade) {
-            return response()->json(['message' => 'Modalidade não encontrada'], 404);
-        }
-
-        return response()->json($modalidade);
+        try {
+            $modalidade = $this->modalidadeService->getModalidadeById($id);
+            return response()->json([
+                'success' => true,
+                'data' => new ModalidadeResource($modalidade)
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_NOT_FOUND);
+        }       
     }
 
-    /**
-     * Cria uma nova modalidade.
-     */
-    public function store(Request $request)
+    public function store(StoreModalidadeRequest $request)
     {
-        $validatedData = $request->validate([
-            'instituicao_id' => 'required|exists:instituicoes,id',
-            'nome' => 'required|string|max:255',
-            'cod' => 'required|string|max:50',
-        ]);
+        try {
+            $validateData = $request->validated();
+            $modalidade = $this->modalidadeService->createModalidade($validateData);
+            return response()->json([
+                'success' => true,
+                'message' => 'Modalidade criada com sucesso.',
+                'data' => new ModalidadeResource($modalidade)
+            ], Response::HTTP_CREATED);
 
-        $modalidade = Modalidade::create($validatedData);
-
-        return response()->json($modalidade, 201);
-    }
-
-    /**
-     * Atualiza uma modalidade existente.
-     */
-    public function update(Request $request, $id)
-    {
-        $modalidade = Modalidade::find($id);
-
-        if (!$modalidade) {
-            return response()->json(['message' => 'Modalidade não encontrada'], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        $validatedData = $request->validate([
-            'instituicao_id' => 'sometimes|exists:instituicoes,id',
-            'nome' => 'sometimes|string|max:255',
-            'cod' => 'sometimes|string|max:50',
-        ]);
-
-        $modalidade->update($validatedData);
-
-        return response()->json($modalidade);
     }
+    public function update(UpdateModalidadeRequest $request, $id)
+    {
+        try {
+            $validatedData = $request->validated();
+            $modalidade = $this->modalidadeService->updateModalidade($id, $validatedData);
+            return response()->json([
+                'success' => true,
+                'message' => 'Modalidade atualizada com sucesso!',
+                'data' => new ModalidadeResource($modalidade)
+            ], Response::HTTP_OK);
 
-    /**
-     * Remove uma modalidade.
-     */
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
     public function destroy($id)
     {
-        $modalidade = Modalidade::find($id);
+       try {
+            $this->modalidadeService->deleteModalidade($id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Modalidade excluída com sucesso.'
+            ], Response::HTTP_OK);
 
-        if (!$modalidade) {
-            return response()->json(['message' => 'Modalidade não encontrada'], 404);
-        }
-
-        $modalidade->delete();
-
-        return response()->json(['message' => 'Modalidade removida com sucesso']);
+       } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+       }
     }
 }

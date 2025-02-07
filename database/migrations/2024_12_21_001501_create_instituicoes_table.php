@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('instituicoes', function (Blueprint $table) {
             $table->id();
+            $table->integer('codigo')->unique();
             $table->string('nome');
             $table->timestamps();
         });

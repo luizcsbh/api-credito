@@ -9,7 +9,7 @@ class Instituicao extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['codigo','nome'];
 
     protected $table = 'instituicoes';
 

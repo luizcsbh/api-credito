@@ -2,211 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Instituicao;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Services\InstituicaoService;
+use App\Http\Resources\InstituicaoResource;
+use App\Http\Requests\{StoreInstituicaoRequest, UpdateInstituicaoRequest};
 
-/**
- * @OA\Tag(
- *     name="Instituicoes",
- *     description="Gerenciamento de instituições financeiras"
- * )
- */
+
 class InstituicaoController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/instituicoes",
-     *     summary="Listar instituições",
-     *     tags={"Instituicoes"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista de instituições financeiras.",
-     *         @OA\JsonContent(type="array", @OA\Items(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="nome", type="string", example="Banco Exemplo")
-     *         ))
-     *     )
-     * )
-     */
+    protected $instituicaoService;
+
+    public function __construct(InstituicaoService $instituicaoService)
+    {
+        $this->instituicaoService = $instituicaoService;
+    }
+
     public function index()
     {
-        $instituicoes = Instituicao::all();
-        return response()->json($instituicoes, 200);
+       try {
+            $instituicoes = $this->instituicaoService->getAllInstituicao();
+
+            if ($instituicoes->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma instituição encontrada!'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => InstituicaoResource::collection($instituicoes)
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar as instituições.',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
-
-    /**
-     * @OA\Post(
-     *     path="/instituicoes",
-     *     summary="Criar nova instituição",
-     *     tags={"Instituicoes"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"nome"},
-     *             @OA\Property(property="nome", type="string", example="Banco Novo")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Instituição criada com sucesso.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="nome", type="string", example="Banco Novo")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Erro de validação.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="O campo nome é obrigatório.")
-     *         )
-     *     )
-     * )
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate(
-            ['nome' => 'required|string|max:255'],
-            ['nome.required' => 'O campo nome é obrigatório.']
-        );
-
-        $instituicao = Instituicao::create($validated);
-
-        return response()->json($instituicao, 201);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/instituicoes/{id}",
-     *     summary="Exibir uma instituição",
-     *     tags={"Instituicoes"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="ID da instituição"
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Detalhes da instituição.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="nome", type="string", example="Banco Exemplo")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Instituição não encontrada.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Instituição não encontrada.")
-     *         )
-     *     )
-     * )
-     */
     public function show($id)
     {
-        $instituicao = Instituicao::find($id);
-
-        if (!$instituicao) {
-            return response()->json(['message' => 'Instituição não encontrada.'], 404);
-        }
-
-        return response()->json($instituicao, 200);
+        try {
+            $instituicao = $this->instituicaoService->getInstituicaoById($id);
+            return response()->json([
+                'success' => true,
+                'data' => new InstituicaoResource($instituicao)
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_NOT_FOUND);
+        }       
     }
 
-    /**
-     * @OA\Put(
-     *     path="/instituicoes/{id}",
-     *     summary="Atualizar uma instituição",
-     *     tags={"Instituicoes"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="ID da instituição"
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"nome"},
-     *             @OA\Property(property="nome", type="string", example="Banco Atualizado")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Instituição atualizada com sucesso.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="nome", type="string", example="Banco Atualizado")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Instituição não encontrada.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Instituição não encontrada.")
-     *         )
-     *     )
-     * )
-     */
-    public function update(Request $request, $id)
+    public function store(StoreInstituicaoRequest $request)
     {
-        $instituicao = Instituicao::find($id);
+        try {
+            $validateData = $request->validated();
+            $instituicao = $this->instituicaoService->createInstituicao($validateData);
+            return response()->json([
+                'success' => true,
+                'message' => 'Instituição criada com sucesso.',
+                'data' => new InstituicaoResource($instituicao)
+            ], Response::HTTP_CREATED);
 
-        if (!$instituicao) {
-            return response()->json(['message' => 'Instituição não encontrada.'], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        $validated = $request->validate(
-            ['nome' => 'required|string|max:255'],
-            ['nome.required' => 'O campo nome é obrigatório.']
-        );
-
-        $instituicao->update($validated);
-
-        return response()->json($instituicao, 200);
     }
+    public function update(UpdateInstituicaoRequest $request, $id)
+    {
+        try {
+            $validatedData = $request->validated();
+            $instituicao = $this->instituicaoService->updateInstituicao($id, $validatedData);
+            return response()->json([
+                'success' => true,
+                'message' => 'Instituição atualizada com sucesso!',
+                'data' => new InstituicaoResource($instituicao)
+            ], Response::HTTP_OK);
 
-    /**
-     * @OA\Delete(
-     *     path="/instituicoes/{id}",
-     *     summary="Excluir uma instituição",
-     *     tags={"Instituicoes"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="ID da instituição"
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Instituição excluída com sucesso.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Instituição excluída com sucesso.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Instituição não encontrada.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Instituição não encontrada.")
-     *         )
-     *     )
-     * )
-     */
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
     public function destroy($id)
     {
-        $instituicao = Instituicao::find($id);
+       try {
+            $this->instituicaoService->deleteInstituicaoWithValidation($id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Instituição excluída com sucesso.'
+            ], Response::HTTP_OK);
 
-        if (!$instituicao) {
-            return response()->json(['message' => 'Instituição não encontrada.'], 404);
-        }
-
-        $instituicao->delete();
-
-        return response()->json(['message' => 'Instituição excluída com sucesso.'], 200);
+       } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+       }
     }
 }

@@ -9,49 +9,6 @@ use Illuminate\Http\Response;
 
 class CreditoController extends Controller
 {
-/**
- * @OA\Post(
- *     path="/simulacao/credito",
- *     summary="Consulta de crédito",
- *     description="Obtém as instituições financeiras e modalidades de crédito disponíveis para um cliente baseado no CPF.",
- *     tags={"Crédito"},
- *     @OA\RequestBody(
- *         required=true,
- *         description="CPF do cliente no formato JSON",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="cpf", type="string", example="12312312312")
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Lista de instituições financeiras e modalidades de crédito disponíveis.",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(
- *                 @OA\Property(property="instituicao_id", type="integer", example=1),
- *                 @OA\Property(property="instituicao_nome", type="string", example="Banco Exemplo"),
- *                 @OA\Property(
- *                     property="modalidades",
- *                     type="array",
- *                     @OA\Items(
- *                         @OA\Property(property="modalidade_cod", type="integer", example=101),
- *                         @OA\Property(property="modalidade_nome", type="string", example="Crédito Pessoal"),
- *                         @OA\Property(property="taxa_juros", type="number", format="float", example=1.5)
- *                     )
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="CPF não encontrado ou sem ofertas disponíveis.",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="CPF não encontrado")
- *         )
- *     )
- * )
- */
     public function credito(Request $request)
     {
         $cpf = $request->input('cpf');
@@ -97,55 +54,6 @@ class CreditoController extends Controller
         return response()->json($instituicoes);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/simulacao/simula-oferta",
-     *     summary="Simulação de ofertas de crédito",
-     *     description="Simula as ofertas de crédito disponíveis para um cliente com base no CPF informado.",
-     *     tags={"Crédito"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"cpf"},
-     *             @OA\Property(property="cpf", type="string", example="11111111111")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Ofertas de crédito simuladas.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="cpf", type="string", example="11111111111"),
-     *             @OA\Property(
-     *                 property="ofertas",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="instituicaoFinanceira", type="string", example="Banco Exemplo"),
-     *                     @OA\Property(property="modalidadeCredito", type="string", example="Crédito Consignado"),
-     *                     @OA\Property(property="valorSolicitado", type="number", example=5000.00),
-     *                     @OA\Property(property="valorAPagar", type="number", example=5400.00),
-     *                     @OA\Property(property="taxaJuros", type="string", example="1.2%"),
-     *                     @OA\Property(property="qntParcelas", type="integer", example=12)
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="CPF não encontrado ou sem ofertas disponíveis.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Nenhuma oferta encontrada para o CPF informado")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro ao processar a solicitação.",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Erro ao processar a solicitação"),
-     *             @OA\Property(property="error", type="string", example="Detalhes do erro")
-     *         )
-     *     )
-     * )
-     */
     public function simulaOferta(Request $request)
     {
         $request->validate([
@@ -214,6 +122,5 @@ class CreditoController extends Controller
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }    
-    
+    }     
 }

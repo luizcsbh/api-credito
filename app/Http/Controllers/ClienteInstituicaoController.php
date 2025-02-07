@@ -2,51 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreClienteInstituicaoRequest;
+use App\Http\Requests\UpdateClienteInstituicaoRequest;
 use Illuminate\Http\Response;
-use App\Services\ClienteService;
-use App\Http\Resources\ClienteResource;
-use App\Http\Requests\{StoreClienteRequest, UpdateClienteRequest};
+use App\Services\ClienteInstituicaoService;
+use App\Http\Resources\ClienteInstituicaoResource;
 
-class ClienteController extends Controller
+
+class ClienteInstituicaoController extends Controller
 {
-    protected $clienteService;
+    protected $clienteInstituicaoService;
 
-    public function __construct(ClienteService $clienteService)
+    public function __construct(ClienteInstituicaoService $clienteInstituicaoService)
     {
-        $this->clienteService = $clienteService;
+        $this->clienteInstituicaoService = $clienteInstituicaoService;
     }
+
     public function index()
     {
         try {
-            $clientes = $this->clienteService->getAllCliente();
+            $clienteInstituicoes = $this->clienteInstituicaoService->getAllClienteInstituicao();
 
-            if ($clientes->isEmpty()) {
+            if ($clienteInstituicoes->isEmpty()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Não há clientes cadastrados!'
+                    'message' => 'Não há registros cadastrados!',
                 ], Response::HTTP_NOT_FOUND);
             }
 
             return response()->json([
                 'success' => true,
-                'data' => ClienteResource::collection($clientes)
+                'data' => ClienteInstituicaoResource::collection($clienteInstituicoes)
             ], Response::HTTP_OK);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao buscar os  clientes.',
+                'message' => 'Erro ao buscar os registros.',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function show($id)
     {
         try {
-            $cliente = $this->clienteService->getClienteById($id);
+            $clienteInstituicao = $this->clienteInstituicaoService->getClienteInstituicaoById($id);
             return response()->json([
                 'success' => true,
-                'data' => new ClienteResource($cliente)
+                'data' => new ClienteInstituicaoResource($clienteInstituicao)
             ], Response::HTTP_OK);
     
         } catch (\Exception $e) {
@@ -56,32 +59,33 @@ class ClienteController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
     }
-    public function store(StoreClienteRequest $request)
+
+    public function store(StoreClienteInstituicaoRequest $request)
     {
         try {
             $validateData = $request->validated();
-            $cliente = $this->clienteService->createCliente($validateData);
+            $clienteInstituicao = $this->clienteInstituicaoService->createClienteInstituicao($validateData);
             return response()->json([
                 'success' => true,
-                'message' => 'Cliente criado com sucesso.',
-                'data' => new ClienteResource($cliente)
+                'message' => 'Registro criado com sucesso!',
+                'data'    => new ClienteInstituicaoResource($clienteInstituicao)
             ], Response::HTTP_CREATED);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-    public function update(UpdateClienteRequest $request, $id)
+
+    public function update(UpdateClienteInstituicaoRequest $request, $id)
     {
         try {
             $validatedData = $request->validated();
-            $cliente = $this->clienteService->updateCliente($id, $validatedData);
+            $cliente = $this->clienteInstituicaoService->updateClienteInstituicao($id, $validatedData);
             return response()->json([
                 'success' => true,
-                'message' => 'Cliente atualizado com sucesso!',
-                'data' => new ClienteResource($cliente)
+                'message' => 'Registro atualizado com sucesso!',
+                'data' => new ClienteInstituicaoResource($cliente)
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
@@ -94,19 +98,20 @@ class ClienteController extends Controller
     public function destroy($id)
     {
         try {
-            $this->clienteService->deleteClienteWithAssociations($id);
+            $this->clienteInstituicaoService->deleteClienteInstituicao($id);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cliente excluído com sucesso.'
+                'message' => 'Registro excluído com sucesso.'
             ], Response::HTTP_OK);
     
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao excluir o cliente.',
+                'message' => 'Erro ao excluir o registro.',
                 'error' => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+
 }

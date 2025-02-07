@@ -5,6 +5,8 @@ use App\Http\Controllers\CreditoController;
 use App\Http\Controllers\InstituicaoController;
 use App\Http\Controllers\ModalidadeController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ClienteInstituicaoController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,12 +19,10 @@ use App\Http\Controllers\ClienteController;
 */
 
 Route::resource('/clientes', ClienteController::class);
+Route::resource('/instituicoes', InstituicaoController::class);
+Route::resource('/modalidades', ModalidadeController::class);
+Route::resource('/clienteinstituicoes', ClienteInstituicaoController::class);
 
-Route::get('/instituicoes', [InstituicaoController::class, 'index']);
-Route::get('/instituicoes/{id}', [InstituicaoController::class, 'show']);
-
-Route::resource('/modalidades', ModalidadeController::class)->only(['index', 'show']);
-Route::resource('/modalidades', ModalidadeController::class)->except(['create', 'edit']);
 
 Route::prefix('simulacao')->group(function () {
     Route::post('/credito', [CreditoController::class, 'credito']);

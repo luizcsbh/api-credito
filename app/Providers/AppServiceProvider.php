@@ -2,6 +2,14 @@
 
 namespace App\Providers;
 
+use App\Repositories\{
+    ClienteRepositoryInterface, ClienteInstituicaoRepositoryInterface,
+    InstituicaoRepositoryInterface, ModalidadeRepositoryInterface
+};
+use App\Repositories\Eloquent\{
+    ClienteRepository, ClienteInstituicaoRepository, 
+    InstituicaoRepository, ModalidadeRepository
+};
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(ClienteRepositoryInterface::class, ClienteRepository::class);
+        $this->app->bind(ClienteInstituicaoRepositoryInterface::class, ClienteInstituicaoRepository::class);
+        $this->app->bind(InstituicaoRepositoryInterface::class, InstituicaoRepository::class);
+        $this->app->bind(ModalidadeRepositoryInterface::class, ModalidadeRepository::class);
     }
 
     /**

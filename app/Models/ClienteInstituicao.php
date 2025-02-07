@@ -12,12 +12,10 @@ class ClienteInstituicao extends Model
     protected $fillable = ['cliente_id', 'instituicao_id'];
 
     protected $table = 'cliente_instituicoes';
-
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);
     }
-
     public function instituicao()
     {
         return $this->belongsTo(Instituicao::class);
