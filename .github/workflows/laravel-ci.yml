@@ -1,4 +1,4 @@
-name: Laravel CI/CD
+name: Laravel CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Testar e Buildar Laravel
+    name: Testar Laravel
     runs-on: ubuntu-latest
 
     services:
@@ -55,29 +55,3 @@ jobs:
 
       - name: Executar Testes
         run: php artisan test
-
-  deploy:
-    name: Deploy no Servidor
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clonar Repositório
-        uses: actions/checkout@v4
-
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd /var/www/api-credito
-            git pull origin main
-            composer install --no-interaction --prefer-dist --optimize-autoloader
-            php artisan migrate --force
-            php artisan config:clear
-            php artisan cache:clear
-            php artisan route:clear
-            php artisan queue:restart
-            sudo systemctl restart nginx
