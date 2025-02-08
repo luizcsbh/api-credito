@@ -2,7 +2,7 @@
 ![forks](https://img.shields.io/github/forks/luizcsbh/api-credito)
 ![stars](https://img.shields.io/github/stars/luizcsbh/api-credito)
 ![code-size](https://img.shields.io/github/languages/code-size/luizcsbh/api-credito)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/luizcsbh/api-credito/laravel-ci.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/luizcsbh/api-credito/laravel-ci.yml)](https://github.com/luizcsbh/api-credito/actions)
 [![commit activity](https://img.shields.io/github/commit-activity/m/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
 [![last commit](https://img.shields.io/github/last-commit/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
 
