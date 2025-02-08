@@ -7,7 +7,7 @@
 )](https://github.com/luizcsbh/api-credito/actions)
 [![commit activity](https://img.shields.io/github/commit-activity/m/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
 [![last commit](https://img.shields.io/github/last-commit/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
-[![version](https://img.shields.io/github/package-json/v/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/blob/main/package.json)
+
 [![twwiter follow](https://img.shields.io/twitter/follow/luizcs?style=social)](https://twitter.com/luizcs)
 
 ## Projeto API-CREDITO
