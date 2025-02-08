@@ -1,9 +1,8 @@
 [![issues](https://img.shields.io/github/issues/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/issues)
 ![forks](https://img.shields.io/github/forks/luizcsbh/api-credito)
 ![stars](https://img.shields.io/github/stars/luizcsbh/api-credito)
-[![lincença](https://img.shields.io/github/license/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/blob/main/LICENSE)
 ![code-size](https://img.shields.io/github/languages/code-size/luizcsbh/api-credito)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/luizcsbh/api-credito/Node.js%20CI
+[![GitHub Workflow Status](https://img.shields.io/github/workflows/status/luizcsbh/api-credito/laravel-ci
 )](https://github.com/luizcsbh/api-credito/actions)
 [![commit activity](https://img.shields.io/github/commit-activity/m/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
 [![last commit](https://img.shields.io/github/last-commit/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
