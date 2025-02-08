@@ -1,3 +1,14 @@
+[![issues](https://img.shields.io/github/issues/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/issues)
+![forks](https://img.shields.io/github/forks/luizcsbh/api-credito)
+![stars](https://img.shields.io/github/stars/luizcsbh/api-credito)
+[![lincença](https://img.shields.io/github/license/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/blob/master/LICENSE)
+![code-size](https://img.shields.io/github/languages/code-size/luizcsbh/api-credito)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/luizcsbh/api-credito/Node.js%20CI
+)](https://github.com/luizcsbh/api-credito/actions)
+[![commit activity](https://img.shields.io/github/commit-activity/m/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
+[![last commit](https://img.shields.io/github/last-commit/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/commits)
+[![version](https://img.shields.io/github/package-json/v/luizcsbh/api-credito)](https://github.com/luizcsbh/api-credito/blob/master/package.json)
+[![twwiter follow](https://img.shields.io/twitter/follow/luizcs?style=social)](https://twitter.com/luizcs)
 
 ## Projeto API-CREDITO
 
