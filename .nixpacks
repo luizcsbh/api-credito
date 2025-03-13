@@ -1,2 +1,4 @@
 phpVersion=8.3
 providers=[php]
+[build]
+setup_script="./setup.sh"
