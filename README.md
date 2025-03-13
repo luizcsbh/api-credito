@@ -8,7 +8,6 @@
 
 [![twwiter follow](https://img.shields.io/twitter/follow/luizcs?style=social)](https://twitter.com/luizcs)
 
-![API-Crédito](assets/api-credito.png)
 
 ![API-Crédito](https://github.com/luizcsbh/api-credito/raw/main/assets/api-credito.png)
 
