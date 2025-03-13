@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Repositories\{
     ClienteRepositoryInterface, ClienteInstituicaoRepositoryInterface,
+    ClienteModalidadeRepositoryInterface,
     InstituicaoRepositoryInterface, ModalidadeRepositoryInterface
 };
 use App\Repositories\Eloquent\{
-    ClienteRepository, ClienteInstituicaoRepository, 
+    ClienteRepository, ClienteInstituicaoRepository,
+    ClienteModalidadeRepository,
     InstituicaoRepository, ModalidadeRepository
 };
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(ClienteRepositoryInterface::class, ClienteRepository::class);
         $this->app->bind(ClienteInstituicaoRepositoryInterface::class, ClienteInstituicaoRepository::class);
+        $this->app->bind(ClienteModalidadeRepositoryInterface::class, ClienteModalidadeRepository::class);
         $this->app->bind(InstituicaoRepositoryInterface::class, InstituicaoRepository::class);
         $this->app->bind(ModalidadeRepositoryInterface::class, ModalidadeRepository::class);
     }
