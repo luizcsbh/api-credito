@@ -1,31 +1,38 @@
+# Dockerfile
 FROM php:8.3-apache
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     zip \
     unzip \
     libzip-dev \
+    libpng-dev \
     libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath zip
+    libpq-dev \
+    && docker-php-ext-install \
+    pdo_mysql \
+    pdo_pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip
 
-# Enable Apache rewrite module
-RUN a2enmod rewrite
-
-# Copy files
+# Configure Apache
 COPY . /var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage \
+    && a2enmod rewrite
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install dependencies
+# Install PHP dependencies
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage
-
-# Expose port 80
+# Expose port and run Apache
 EXPOSE 80
-
 CMD ["apache2-foreground"]
