@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
 use App\Services\ModalidadeService;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ModalidadeResource;
 use App\Http\Requests\{StoreModalidadeRequest, UpdateModalidadeRequest};
 
@@ -20,7 +21,12 @@ class ModalidadeController extends Controller
     public function index()
     {
        try {
-            $modalidades = $this->modalidadeService->getAllModalidade();
+            
+            $cacheKey = 'modalidades_todas';
+
+            $modalidades = Cache::remember($cacheKey, now()->addMinutes(10), function () {
+                return $this->modalidadeService->getAllModalidade();
+            });
 
             if ($modalidades->isEmpty()) {
                 return response()->json([
@@ -41,6 +47,7 @@ class ModalidadeController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function show($id)
     {
         try {
@@ -61,6 +68,8 @@ class ModalidadeController extends Controller
         try {
             $validateData = $request->validated();
             $modalidade = $this->modalidadeService->createModalidade($validateData);
+            Cache::forget('modalidades_todas');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Modalidade criada com sucesso.',
