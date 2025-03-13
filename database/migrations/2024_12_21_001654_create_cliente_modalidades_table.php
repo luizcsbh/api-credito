@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('instituicao_id')->constrained('instituicoes')->onDelete('cascade');
             $table->foreignId('modalidade_id')->constrained('modalidades')->onDelete('cascade');
             $table->timestamps();
+            $table->index(['id', 'created_at']);
         });
     }
 

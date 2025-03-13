@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->decimal('taxa_juros', 5, 2);
             $table->timestamps();
+            $table->index(['id', 'taxa_juros','created_at']);
         });
     }
 

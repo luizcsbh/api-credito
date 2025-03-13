@@ -6,7 +6,7 @@ use Illuminate\Http\Response;
 use App\Services\InstituicaoService;
 use App\Http\Resources\InstituicaoResource;
 use App\Http\Requests\{StoreInstituicaoRequest, UpdateInstituicaoRequest};
-
+use Illuminate\Support\Facades\Cache;
 
 class InstituicaoController extends Controller
 {
@@ -20,7 +20,12 @@ class InstituicaoController extends Controller
     public function index()
     {
        try {
-            $instituicoes = $this->instituicaoService->getAllInstituicao();
+
+            $cacheKey = 'instituicoes_todas';
+
+            $instituicoes = Cache::remember($cacheKey, now()->addMinutes(10), function () {
+                return $this->instituicaoService->getAllInstituicao();
+            });
 
             if ($instituicoes->isEmpty()) {
                 return response()->json([
@@ -61,6 +66,8 @@ class InstituicaoController extends Controller
         try {
             $validateData = $request->validated();
             $instituicao = $this->instituicaoService->createInstituicao($validateData);
+            Cache::forget('instituicoes_todas');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Instituição criada com sucesso.',

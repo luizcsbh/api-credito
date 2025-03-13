@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nome');
             $table->string('cpf')->unique();
             $table->timestamps();
+            $table->index(['id', 'nome','cpf','created_at']);
         });
     }
 

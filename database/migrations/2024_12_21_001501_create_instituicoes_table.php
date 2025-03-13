@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('codigo')->unique();
             $table->string('nome');
             $table->timestamps();
+            $table->index(['id', 'codigo','nome','created_at']);
         });
     }
 

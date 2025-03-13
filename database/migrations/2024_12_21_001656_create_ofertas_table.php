@@ -21,8 +21,8 @@ return new class extends Migration
             $table->integer('qnt_parcela_min');
             $table->integer('qnt_parcela_max');
             $table->timestamps();
-        
             $table->foreign('modalidade_id')->references('id')->on('modalidades')->onDelete('cascade');
+            $table->index(['id','created_at']);
         });
     }
 

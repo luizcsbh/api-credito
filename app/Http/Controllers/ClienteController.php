@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use App\Services\ClienteService;
 use App\Http\Resources\ClienteResource;
 use App\Http\Requests\{StoreClienteRequest, UpdateClienteRequest};
+use Illuminate\Support\Facades\Cache;
 
 class ClienteController extends Controller
 {
@@ -18,7 +19,12 @@ class ClienteController extends Controller
     public function index()
     {
         try {
-            $clientes = $this->clienteService->getAllCliente();
+
+            $cacheKey = 'clientes_todos';
+
+            $clientes = Cache::remember($cacheKey, now()->addMinutes(10), function () {
+                return $this->clienteService->getAllCliente();
+            });
 
             if ($clientes->isEmpty()) {
                 return response()->json([
@@ -61,6 +67,8 @@ class ClienteController extends Controller
         try {
             $validateData = $request->validated();
             $cliente = $this->clienteService->createCliente($validateData);
+            Cache::forget('clientes_todos');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Cliente criado com sucesso.',

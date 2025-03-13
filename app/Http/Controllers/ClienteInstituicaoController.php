@@ -7,7 +7,7 @@ use App\Http\Requests\UpdateClienteInstituicaoRequest;
 use Illuminate\Http\Response;
 use App\Services\ClienteInstituicaoService;
 use App\Http\Resources\ClienteInstituicaoResource;
-
+use Illuminate\Support\Facades\Cache;
 
 class ClienteInstituicaoController extends Controller
 {
@@ -21,8 +21,13 @@ class ClienteInstituicaoController extends Controller
     public function index()
     {
         try {
-            $clienteInstituicoes = $this->clienteInstituicaoService->getAllClienteInstituicao();
 
+            $cacheKey = 'clienteInstituicao_todos';
+
+            $clienteInstituicoes = Cache::remember($cacheKey, now()->addMinutes(10), function () {
+                return $this->clienteInstituicaoService->getAllClienteInstituicao();
+            });
+            
             if ($clienteInstituicoes->isEmpty()) {
                 return response()->json([
                     'success' => false,
@@ -63,8 +68,11 @@ class ClienteInstituicaoController extends Controller
     public function store(StoreClienteInstituicaoRequest $request)
     {
         try {
+
             $validateData = $request->validated();
             $clienteInstituicao = $this->clienteInstituicaoService->createClienteInstituicao($validateData);
+            Cache::forget('clienteInstituicao_todos');
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Registro criado com sucesso!',
