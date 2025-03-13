@@ -26,6 +26,11 @@ DB_DATABASE=simulacao
 DB_USERNAME=root
 DB_PASSWORD=
 ```
+Configuração do Cache
+```env
+CACHE_DRIVER=redis
+```
+
 Após de configuração do Projeto rode o comando abaixo para povoar o banco de dados
 
 ```php
