@@ -17,7 +17,7 @@ API que simula ofertas de crédito para clientes cadastrados no banco usando fra
 
 ### Configuracao do Projeto
 
-Para rodar o projeto é necessário configura o banco de dados no .env
+Para rodar o projeto localmente será necessário configura o banco de dados no .env
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -37,9 +37,13 @@ Após de configuração do Projeto rode o comando abaixo para povoar o banco de 
 php artisan db:seed
 ```
 ## Documentação
-A API está documenta usando swagger na 
+A API está documenta usando swagger na local
 
 http://127.0.0.1:8000/api/documentation
+
+url 
+
+https://api-credito.up.railway.app/api/documentation
 
 Para acessar a simulação  de credito acesse a url
 http://127.0.0.1:8000/api/simulacao/credito
