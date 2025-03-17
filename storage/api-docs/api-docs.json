@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API Simulação",
-        "description": "Documentação da API de Simulação. Esta API fornece funcionalidades para gerenciar clientes, instituições, modalidades de crédito e ofertas.",
+        "title": "API Simulação de Crédito",
+        "description": "Documentação da API de Simulação de Crédito. Esta API fornece funcionalidades para gerenciar clientes, instituições, modalidades de crédito e ofertas.",
         "contact": {
             "name": "Luiz Santos Full Stack Developer ",
             "email": "luizcsdev@gmail.com"
@@ -25,32 +25,69 @@
                 "tags": [
                     "Clientes"
                 ],
-                "summary": "Listar todos os clientes",
-                "description": "Retorna uma lista de clientes cadastrados.",
+                "summary": "Lista todos os clientes",
+                "description": "Retorna uma lista de clientes armazenados no banco de dados.",
                 "operationId": "ce1b06de9bbd15a5cc0ed7ab28ee5713",
                 "responses": {
                     "200": {
-                        "description": "Lista de clientes.",
+                        "description": "Lista de clientes retornada com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Cliente"
-                                    }
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Cliente"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "404": {
-                        "description": "Nenhum cliente encontrado.",
+                        "description": "Nenhum cliente encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "Não há clientes cadastrados."
+                                            "example": "Não há clientes cadastrados!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar os clientes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar os clientes."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
                                         }
                                     },
                                     "type": "object"
@@ -65,25 +102,32 @@
                     "Clientes"
                 ],
                 "summary": "Cria um novo cliente",
-                "description": "Cadastra um novo cliente no sistema.",
+                "description": "Registra um novo cliente no banco de dados.",
                 "operationId": "703b9106594ca621e0c5bb1b8328bb70",
                 "requestBody": {
+                    "description": "Dados necessários para criar um novo cliente",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
                                     "nome",
-                                    "cpf"
+                                    "email",
+                                    "telefone"
                                 ],
                                 "properties": {
                                     "nome": {
                                         "type": "string",
                                         "example": "João da Silva"
                                     },
-                                    "cpf": {
+                                    "email": {
                                         "type": "string",
-                                        "example": "123.456.789-00"
+                                        "format": "email",
+                                        "example": "joao@email.com"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(11) 99999-9999"
                                     }
                                 },
                                 "type": "object"
@@ -93,41 +137,21 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Cliente criado com sucesso.",
+                        "description": "Cliente criado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
                                         "message": {
                                             "type": "string",
                                             "example": "Cliente criado com sucesso."
                                         },
-                                        "cliente": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "nome": {
-                                                    "type": "string",
-                                                    "example": "João da Silva"
-                                                },
-                                                "cpf": {
-                                                    "type": "string",
-                                                    "example": "123.456.789-00"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2024-12-21T10:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2024-12-21T10:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
+                                        "data": {
+                                            "$ref": "#/components/schemas/Cliente"
                                         }
                                     },
                                     "type": "object"
@@ -136,33 +160,14 @@
                         }
                     },
                     "422": {
-                        "description": "Erro de validação.",
+                        "description": "Erro de validação ao criar o cliente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "error": {
                                             "type": "string",
-                                            "example": "Os dados fornecidos são inválidos."
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "nome": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "O campo nome é obrigatório."
-                                                    }
-                                                },
-                                                "cpf": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "O campo cpf é obrigatório."
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
+                                            "example": "Erro ao processar a solicitação."
                                         }
                                     },
                                     "type": "object"
@@ -178,8 +183,8 @@
                 "tags": [
                     "Clientes"
                 ],
-                "summary": "Exibe os detalhes de um cliente",
-                "description": "Retorna os detalhes de um cliente específico, incluindo suas associações com instituições e modalidades.",
+                "summary": "Obtém os detalhes de um cliente",
+                "description": "Retorna os detalhes de um cliente específico pelo ID.",
                 "operationId": "9414678b6b3a1f03b3d296d4dcf8d844",
                 "parameters": [
                     {
@@ -188,40 +193,24 @@
                         "description": "ID do cliente",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalhes do cliente retornados com sucesso.",
+                        "description": "Detalhes do cliente retornados com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
-                                        "nome": {
-                                            "type": "string",
-                                            "example": "João da Silva"
-                                        },
-                                        "cpf": {
-                                            "type": "string",
-                                            "example": "123.456.789-00"
-                                        },
-                                        "instituicoes": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object"
-                                            }
-                                        },
-                                        "modalidades": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object"
-                                            }
+                                        "data": {
+                                            "$ref": "#/components/schemas/Cliente"
                                         }
                                     },
                                     "type": "object"
@@ -230,7 +219,24 @@
                         }
                     },
                     "404": {
-                        "description": "Cliente não encontrado."
+                        "description": "Cliente não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cliente não encontrado!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -238,33 +244,45 @@
                 "tags": [
                     "Clientes"
                 ],
-                "summary": "Atualiza as informações de um cliente",
-                "description": "Atualiza os dados de um cliente existente.",
+                "summary": "Atualiza um cliente existente",
+                "description": "Atualiza os dados de um cliente com base no ID fornecido.",
                 "operationId": "27af8d44cc1dbf176f91e6118f0ce961",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID do cliente",
+                        "description": "ID do cliente a ser atualizado",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "requestBody": {
+                    "description": "Dados para atualização do cliente",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "nome",
+                                    "email",
+                                    "telefone"
+                                ],
                                 "properties": {
                                     "nome": {
                                         "type": "string",
-                                        "example": "João da Silva"
+                                        "example": "Maria Oliveira"
                                     },
-                                    "cpf": {
+                                    "email": {
                                         "type": "string",
-                                        "example": "123.456.789-00"
+                                        "format": "email",
+                                        "example": "maria@email.com"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(21) 98888-7777"
                                     }
                                 },
                                 "type": "object"
@@ -274,31 +292,21 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Cliente atualizado com sucesso.",
+                        "description": "Cliente atualizado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cliente atualizado com sucesso."
+                                            "example": "Cliente atualizado com sucesso!"
                                         },
-                                        "cliente": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "nome": {
-                                                    "type": "string",
-                                                    "example": "João da Silva"
-                                                },
-                                                "cpf": {
-                                                    "type": "string",
-                                                    "example": "123.456.789-00"
-                                                }
-                                            },
-                                            "type": "object"
+                                        "data": {
+                                            "$ref": "#/components/schemas/Cliente"
                                         }
                                     },
                                     "type": "object"
@@ -306,8 +314,21 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Cliente não encontrado."
+                    "422": {
+                        "description": "Erro ao processar a atualização do cliente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a solicitação."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -315,30 +336,35 @@
                 "tags": [
                     "Clientes"
                 ],
-                "summary": "Remove um cliente",
-                "description": "Remove um cliente e suas associações com instituições e modalidades, se existirem.",
+                "summary": "Exclui um cliente",
+                "description": "Remove um cliente do banco de dados com base no ID fornecido.",
                 "operationId": "9ad82979f62d7065a69ed5067066d569",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID do cliente",
+                        "description": "ID do cliente a ser excluído",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cliente removido com sucesso.",
+                        "description": "Cliente excluído com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "Cliente removido com sucesso."
+                                            "example": "Cliente excluído com sucesso."
                                         }
                                     },
                                     "type": "object"
@@ -346,223 +372,23 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro ao remover o cliente.",
+                    "422": {
+                        "description": "Erro ao excluir o cliente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "Erro ao remover o cliente."
+                                            "example": "Erro ao excluir o cliente."
                                         },
                                         "error": {
                                             "type": "string",
-                                            "example": "Mensagem de erro detalhada."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/simulacao/credito": {
-            "post": {
-                "tags": [
-                    "Crédito"
-                ],
-                "summary": "Consulta de crédito",
-                "description": "Obtém as instituições financeiras e modalidades de crédito disponíveis para um cliente baseado no CPF.",
-                "operationId": "93e4d62df4c13e766f415714abd36d38",
-                "requestBody": {
-                    "description": "CPF do cliente no formato JSON",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "cpf": {
-                                        "type": "string",
-                                        "example": "12312312312"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Lista de instituições financeiras e modalidades de crédito disponíveis.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "instituicao_id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "instituicao_nome": {
-                                                "type": "string",
-                                                "example": "Banco Exemplo"
-                                            },
-                                            "modalidades": {
-                                                "type": "array",
-                                                "items": {
-                                                    "properties": {
-                                                        "modalidade_cod": {
-                                                            "type": "integer",
-                                                            "example": 101
-                                                        },
-                                                        "modalidade_nome": {
-                                                            "type": "string",
-                                                            "example": "Crédito Pessoal"
-                                                        },
-                                                        "taxa_juros": {
-                                                            "type": "number",
-                                                            "format": "float",
-                                                            "example": 1.5
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "CPF não encontrado ou sem ofertas disponíveis.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "CPF não encontrado"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/simulacao/simula-oferta": {
-            "post": {
-                "tags": [
-                    "Crédito"
-                ],
-                "summary": "Simulação de ofertas de crédito",
-                "description": "Simula as ofertas de crédito disponíveis para um cliente com base no CPF informado.",
-                "operationId": "22aa8d6be9a090ee9f1f9b4bb112eaaf",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "cpf"
-                                ],
-                                "properties": {
-                                    "cpf": {
-                                        "type": "string",
-                                        "example": "11111111111"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Ofertas de crédito simuladas.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "cpf": {
-                                            "type": "string",
-                                            "example": "11111111111"
-                                        },
-                                        "ofertas": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "instituicaoFinanceira": {
-                                                        "type": "string",
-                                                        "example": "Banco Exemplo"
-                                                    },
-                                                    "modalidadeCredito": {
-                                                        "type": "string",
-                                                        "example": "Crédito Consignado"
-                                                    },
-                                                    "valorSolicitado": {
-                                                        "type": "number",
-                                                        "example": 5000
-                                                    },
-                                                    "valorAPagar": {
-                                                        "type": "number",
-                                                        "example": 5400
-                                                    },
-                                                    "taxaJuros": {
-                                                        "type": "string",
-                                                        "example": "1.2%"
-                                                    },
-                                                    "qntParcelas": {
-                                                        "type": "integer",
-                                                        "example": 12
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "CPF não encontrado ou sem ofertas disponíveis.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Nenhuma oferta encontrada para o CPF informado"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro ao processar a solicitação.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Erro ao processar a solicitação"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Detalhes do erro"
+                                            "example": "Detalhes do erro."
                                         }
                                     },
                                     "type": "object"
@@ -578,30 +404,88 @@
         "schemas": {
             "Cliente": {
                 "title": "Cliente",
+                "description": "Modelo de Cliente",
                 "required": [
                     "nome",
                     "cpf"
                 ],
                 "properties": {
                     "id": {
+                        "description": "ID do cliente",
                         "type": "integer",
                         "example": 1
                     },
                     "nome": {
+                        "description": "Nome do cliente",
                         "type": "string",
-                        "example": "João Silva"
+                        "example": "João da Silva"
                     },
                     "cpf": {
+                        "description": "CPF do cliente",
                         "type": "string",
                         "example": "123.456.789-00"
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
+                    "instituicoes": {
+                        "description": "Lista de instituições associadas ao cliente",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Instituicao"
+                        }
                     },
-                    "updated_at": {
+                    "modalidades": {
+                        "description": "Lista de modalidades associadas ao cliente",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Modalidade"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Instituicao": {
+                "title": "Instituição",
+                "description": "Modelo de Instituição",
+                "required": [
+                    "id",
+                    "nome"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID da instituição",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nome": {
+                        "description": "Nome da instituição",
                         "type": "string",
-                        "format": "date-time"
+                        "example": "Banco XYZ"
+                    }
+                },
+                "type": "object"
+            },
+            "Modalidade": {
+                "title": "Modalidade",
+                "description": "Modelo de Modalidade",
+                "required": [
+                    "id",
+                    "instituicao_id",
+                    "credito_taxas_id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID da modalidade",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "instituicao_id": {
+                        "description": "ID da instituição associada",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "credito_taxas_id": {
+                        "description": "ID da taxa de crédito associada",
+                        "type": "integer",
+                        "example": 3
                     }
                 },
                 "type": "object"
@@ -612,10 +496,6 @@
         {
             "name": "Clientes",
             "description": "Gerenciamento de clientes"
-        },
-        {
-            "name": "Crédito",
-            "description": "Crédito"
         }
     ]
 }

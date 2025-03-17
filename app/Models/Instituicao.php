@@ -4,6 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+/**
+ * @OA\Schema(
+ *     schema="Instituicao",
+ *     type="object",
+ *     title="Instituição",
+ *     description="Modelo de Instituição",
+ *     required={"id", "nome"},
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         description="ID da instituição",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="nome",
+ *         type="string",
+ *         description="Nome da instituição",
+ *         example="Banco XYZ"
+ *     )
+ * )
+ */
 
 class Instituicao extends Model
 {

@@ -9,9 +9,9 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
  * @OA\Info(
- *     title="API Simulação",
+ *     title="API Simulação de Crédito",
  *     version="1.0.0",
- *     description="Documentação da API de Simulação. Esta API fornece funcionalidades para gerenciar clientes, instituições, modalidades de crédito e ofertas.",
+ *     description="Documentação da API de Simulação de Crédito. Esta API fornece funcionalidades para gerenciar clientes, instituições, modalidades de crédito e ofertas.",
  *     @OA\Contact(
  *         email="luizcsdev@gmail.com",
  *         name="Luiz Santos Full Stack Developer "

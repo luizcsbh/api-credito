@@ -4,6 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+/**
+ * @OA\Schema(
+ *     schema="Modalidade",
+ *     type="object",
+ *     title="Modalidade",
+ *     description="Modelo de Modalidade",
+ *     required={"id", "instituicao_id", "credito_taxas_id"},
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         description="ID da modalidade",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="instituicao_id",
+ *         type="integer",
+ *         description="ID da instituição associada",
+ *         example=2
+ *     ),
+ *     @OA\Property(
+ *         property="credito_taxas_id",
+ *         type="integer",
+ *         description="ID da taxa de crédito associada",
+ *         example=3
+ *     )
+ * )
+ */
 
 class Modalidade extends Model
 {
