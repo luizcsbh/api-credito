@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  *     type="object",
  *     title="Modalidade",
  *     description="Modelo de Modalidade",
- *     required={"id", "instituicao_id", "credito_taxas_id"},
+ *     required={"instituicao_id", "credito_taxas_id"},
  *     @OA\Property(
  *         property="id",
  *         type="integer",

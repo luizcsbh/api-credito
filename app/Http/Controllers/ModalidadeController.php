@@ -17,7 +17,46 @@ class ModalidadeController extends Controller
     {
         $this->modalidadeService = $modalidadeService;
     }
-
+    /**
+     * @OA\Get(
+     *     path="/modalidades",
+     *     summary="Lista todas as modalidades",
+     *     description="Retorna uma lista de modalidades cadastradas.",
+     *     tags={"Modalidades"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de modalidades retornada com sucesso.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Modalidade")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Nenhuma modalidade encontrada.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Nenhuma modalidade encontrada.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno ao buscar as modalidades.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Erro ao buscar as modalidades."),
+     *             @OA\Property(property="error", type="string", example="Detalhes do erro.")
+     *         )
+     *     )
+     * )
+     */
     public function index()
     {
        try {
@@ -46,7 +85,38 @@ class ModalidadeController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
+    /**
+     * @OA\Get(
+     *     path="/modalidades/{id}",
+     *     summary="Obtém uma modalidade específica",
+     *     description="Retorna os detalhes de uma modalidade pelo ID.",
+     *     tags={"Modalidades"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID da modalidade a ser consultada",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Detalhes da modalidade retornados com sucesso.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", ref="#/components/schemas/Modalidade")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Modalidade não encontrada.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Modalidade não encontrada.")
+     *         )
+     *     )
+     * )
+     */
     public function show($id)
     {
         try {
@@ -67,6 +137,37 @@ class ModalidadeController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }       
     }
+
+    /**
+     * @OA\Post(
+     *     path="/modalidades",
+     *     summary="Cria uma nova modalidade",
+     *     description="Cadastra uma nova modalidade no sistema.",
+     *     tags={"Modalidades"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Modalidade")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Modalidade criada com sucesso.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Modalidade criada com sucesso."),
+     *             @OA\Property(property="data", ref="#/components/schemas/Modalidade")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro ao validar os dados da modalidade.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Erro ao processar a requisição.")
+     *         )
+     *     )
+     * )
+     */
 
     public function store(StoreModalidadeRequest $request)
     {
@@ -89,6 +190,44 @@ class ModalidadeController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+
+    /**
+     * @OA\Put(
+     *     path="/modalidades/{id}",
+     *     summary="Atualiza uma modalidade existente",
+     *     description="Edita os dados de uma modalidade com base no ID.",
+     *     tags={"Modalidades"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID da modalidade a ser atualizada",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Modalidade")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Modalidade atualizada com sucesso.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Modalidade atualizada com sucesso!"),
+     *             @OA\Property(property="data", ref="#/components/schemas/Modalidade")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro ao validar os dados da modalidade.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Erro ao processar a requisição.")
+     *         )
+     *     )
+     * )
+     */
     public function update(UpdateModalidadeRequest $request, $id)
     {
         try {
@@ -111,6 +250,41 @@ class ModalidadeController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/modalidades/{id}",
+     *     summary="Exclui um modalidade",
+     *     description="Remove uma modalidadea do banco de dados com base no ID fornecido.",
+     *     tags={"Modalidades"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID da modalidade a ser excluído",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Modalidade excluída com sucesso",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Modalidade excluída com sucesso.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro ao excluir uma modalidade",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Erro ao excluir uma modalidade."),
+     *             @OA\Property(property="error", type="string", example="Detalhes do erro.")
+     *         )
+     *     )
+     * )
+     */
     public function destroy($id)
     {
        try {

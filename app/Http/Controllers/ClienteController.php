@@ -144,10 +144,9 @@ class ClienteController extends Controller
      *         required=true,
      *         description="Dados necessários para criar um novo cliente",
      *         @OA\JsonContent(
-     *             required={"nome", "email", "telefone"},
+     *             required={"nome", "cpf"},
      *             @OA\Property(property="nome", type="string", example="João da Silva"),
-     *             @OA\Property(property="email", type="string", format="email", example="joao@email.com"),
-     *             @OA\Property(property="telefone", type="string", example="(11) 99999-9999")
+     *             @OA\Property(property="cpf", type="string", format="cpf", example="111.222.333-44"),
      *         )
      *     ),
      *     @OA\Response(
@@ -207,10 +206,9 @@ class ClienteController extends Controller
      *         required=true,
      *         description="Dados para atualização do cliente",
      *         @OA\JsonContent(
-     *             required={"nome", "email", "telefone"},
+     *             required={"nome", "cpf"},
      *             @OA\Property(property="nome", type="string", example="Maria Oliveira"),
-     *             @OA\Property(property="email", type="string", format="email", example="maria@email.com"),
-     *             @OA\Property(property="telefone", type="string", example="(21) 98888-7777")
+     *             @OA\Property(property="cpf", type="string", format="cpf", example="111.222.333-44"),
      *         )
      *     ),
      *     @OA\Response(

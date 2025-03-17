@@ -112,22 +112,17 @@
                             "schema": {
                                 "required": [
                                     "nome",
-                                    "email",
-                                    "telefone"
+                                    "cpf"
                                 ],
                                 "properties": {
                                     "nome": {
                                         "type": "string",
                                         "example": "João da Silva"
                                     },
-                                    "email": {
+                                    "cpf": {
                                         "type": "string",
-                                        "format": "email",
-                                        "example": "joao@email.com"
-                                    },
-                                    "telefone": {
-                                        "type": "string",
-                                        "example": "(11) 99999-9999"
+                                        "format": "cpf",
+                                        "example": "111.222.333-44"
                                     }
                                 },
                                 "type": "object"
@@ -267,22 +262,17 @@
                             "schema": {
                                 "required": [
                                     "nome",
-                                    "email",
-                                    "telefone"
+                                    "cpf"
                                 ],
                                 "properties": {
                                     "nome": {
                                         "type": "string",
                                         "example": "Maria Oliveira"
                                     },
-                                    "email": {
+                                    "cpf": {
                                         "type": "string",
-                                        "format": "email",
-                                        "example": "maria@email.com"
-                                    },
-                                    "telefone": {
-                                        "type": "string",
-                                        "example": "(21) 98888-7777"
+                                        "format": "cpf",
+                                        "example": "111.222.333-44"
                                     }
                                 },
                                 "type": "object"
@@ -398,6 +388,339 @@
                     }
                 }
             }
+        },
+        "/modalidades": {
+            "get": {
+                "tags": [
+                    "Modalidades"
+                ],
+                "summary": "Lista todas as modalidades",
+                "description": "Retorna uma lista de modalidades cadastradas.",
+                "operationId": "835b40e29390413ef9d7e1bd49503960",
+                "responses": {
+                    "200": {
+                        "description": "Lista de modalidades retornada com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Modalidade"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhuma modalidade encontrada.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Nenhuma modalidade encontrada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar as modalidades.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao buscar as modalidades."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Modalidades"
+                ],
+                "summary": "Cria uma nova modalidade",
+                "description": "Cadastra uma nova modalidade no sistema.",
+                "operationId": "10d71c33093d461dfed7725d92188ad3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Modalidade"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Modalidade criada com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Modalidade criada com sucesso."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Modalidade"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro ao validar os dados da modalidade.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a requisição."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/modalidades/{id}": {
+            "get": {
+                "tags": [
+                    "Modalidades"
+                ],
+                "summary": "Obtém uma modalidade específica",
+                "description": "Retorna os detalhes de uma modalidade pelo ID.",
+                "operationId": "c3138aa6359ac7941ed71ed047177abe",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da modalidade a ser consultada",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da modalidade retornados com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Modalidade"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Modalidade não encontrada.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Modalidade não encontrada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Modalidades"
+                ],
+                "summary": "Atualiza uma modalidade existente",
+                "description": "Edita os dados de uma modalidade com base no ID.",
+                "operationId": "f061ababcf8b68476c8c94834b9aa30b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da modalidade a ser atualizada",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Modalidade"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Modalidade atualizada com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Modalidade atualizada com sucesso!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Modalidade"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro ao validar os dados da modalidade.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a requisição."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Modalidades"
+                ],
+                "summary": "Exclui um modalidade",
+                "description": "Remove uma modalidadea do banco de dados com base no ID fornecido.",
+                "operationId": "591711bea5f1b168d5b7e76b7c8b914b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da modalidade a ser excluído",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Modalidade excluída com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Modalidade excluída com sucesso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro ao excluir uma modalidade",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro ao excluir uma modalidade."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -467,7 +790,6 @@
                 "title": "Modalidade",
                 "description": "Modelo de Modalidade",
                 "required": [
-                    "id",
                     "instituicao_id",
                     "credito_taxas_id"
                 ],
@@ -496,6 +818,10 @@
         {
             "name": "Clientes",
             "description": "Gerenciamento de clientes"
+        },
+        {
+            "name": "Modalidades",
+            "description": "Gerenciamento de modalidades de crédito"
         }
     ]
 }
