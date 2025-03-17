@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Eloquent;
 
+use Exception;
 use App\Models\Cliente;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\ClienteRepositoryInterface;
 
 class ClienteRepository implements ClienteRepositoryInterface
@@ -19,22 +21,55 @@ class ClienteRepository implements ClienteRepositoryInterface
 
    public function create(array $data)
    {
-      return Cliente::create($data);
+      DB::beginTransaction();
+
+      try {
+          $cliente= Cliente::create($data);
+          DB::commit();
+          return $cliente;
+      } catch (Exception $e) {
+          DB::rollBack();
+          throw new Exception("Erro ao criar Cliente: " . $e->getMessage());
+      }
    }
    public function update(int $id, array $data)
    {
-      $cliente = Cliente::find($id);
+      DB::beginTransaction();
 
-      if($cliente) {
-         $cliente->update($data);
-         return $cliente;
+      try {
+          $cliente = Cliente::find($id);
+
+          if (!$cliente) {
+              DB::rollBack();
+              return null;
+          }
+
+          $cliente->update($data);
+          DB::commit();
+          return $cliente;
+      } catch (Exception $e) {
+          DB::rollBack();
+          throw new Exception("Erro ao atualizar Cliente: " . $e->getMessage());
       }
-
-      return null;
    }
 
    public function delete(int $id)
    {
-      return Cliente::destroy($id);
+      DB::beginTransaction();
+
+      try {
+          $deleted = Cliente::destroy($id);
+
+          if (!$deleted) {
+              DB::rollBack();
+              return false;
+          }
+
+          DB::commit();
+          return true;
+      } catch (Exception $e) {
+          DB::rollBack();
+          throw new Exception("Erro ao deletar Cliente: " . $e->getMessage());
+      }
    }
 }
