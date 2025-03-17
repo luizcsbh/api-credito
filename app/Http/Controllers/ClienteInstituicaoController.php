@@ -23,7 +23,6 @@ class ClienteInstituicaoController extends Controller
         try {
 
             $cacheKey = 'clienteInstituicao_todos';
-
             $clienteInstituicoes = Cache::remember($cacheKey, now()->addMinutes(10), function () {
                 return $this->clienteInstituicaoService->getAllClienteInstituicao();
             });
@@ -51,7 +50,13 @@ class ClienteInstituicaoController extends Controller
     public function show($id)
     {
         try {
-            $clienteInstituicao = $this->clienteInstituicaoService->getClienteInstituicaoById($id);
+
+            $cacheKey = "clienteInstituicao_{$id}";
+            $clienteInstituicao = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id) {
+                return $this->clienteInstituicaoService->getClienteInstituicaoById($id);
+            });
+
+            $this->clienteInstituicaoService->getClienteInstituicaoById($id);
             return response()->json([
                 'success' => true,
                 'data' => new ClienteInstituicaoResource($clienteInstituicao)
@@ -71,6 +76,7 @@ class ClienteInstituicaoController extends Controller
 
             $validateData = $request->validated();
             $clienteInstituicao = $this->clienteInstituicaoService->createClienteInstituicao($validateData);
+
             Cache::forget('clienteInstituicao_todos');
             
             return response()->json([
@@ -88,8 +94,13 @@ class ClienteInstituicaoController extends Controller
     public function update(UpdateClienteInstituicaoRequest $request, $id)
     {
         try {
+
             $validatedData = $request->validated();
             $cliente = $this->clienteInstituicaoService->updateClienteInstituicao($id, $validatedData);
+
+            Cache::forget("clienteInstituicao_{$id}");
+            Cache::forget('clienteInstituicao_todos');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Registro atualizado com sucesso!',
@@ -106,7 +117,11 @@ class ClienteInstituicaoController extends Controller
     public function destroy($id)
     {
         try {
+
             $this->clienteInstituicaoService->deleteClienteInstituicao($id);
+
+            Cache::forget("clienteInstituicao_{$id}");
+            Cache::forget('clienteInstituicao_todos');
 
             return response()->json([
                 'success' => true,

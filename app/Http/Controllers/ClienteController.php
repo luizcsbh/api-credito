@@ -21,7 +21,6 @@ class ClienteController extends Controller
         try {
 
             $cacheKey = 'clientes_todos';
-
             $clientes = Cache::remember($cacheKey, now()->addMinutes(10), function () {
                 return $this->clienteService->getAllCliente();
             });
@@ -49,8 +48,8 @@ class ClienteController extends Controller
     public function show($id)
     {
         try {
-            $cacheKey = 'cliente_{$id}';
 
+            $cacheKey = "cliente_{$id}";
             $cliente = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id) {
                 return $this->clienteService->getClienteById($id);
             });
@@ -70,6 +69,7 @@ class ClienteController extends Controller
     public function store(StoreClienteRequest $request)
     {
         try {
+
             $validateData = $request->validated();
             $cliente = $this->clienteService->createCliente($validateData);
 
@@ -90,6 +90,7 @@ class ClienteController extends Controller
     public function update(UpdateClienteRequest $request, $id)
     {
         try {
+
             $validatedData = $request->validated();
             $cliente = $this->clienteService->updateCliente($id, $validatedData);
 
@@ -112,6 +113,7 @@ class ClienteController extends Controller
     public function destroy($id)
     {
         try {
+            
             $this->clienteService->deleteClienteWithAssociations($id);
 
             Cache::forget('clientes_{$id}');

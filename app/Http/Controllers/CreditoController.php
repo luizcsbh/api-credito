@@ -116,6 +116,7 @@ class CreditoController extends Controller
                 'cpf' => $cpf,
                 'ofertas' => $resultados->flatten(1), // Agrupa todas as ofertas em um único nível
             ]);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Erro ao processar a solicitação',

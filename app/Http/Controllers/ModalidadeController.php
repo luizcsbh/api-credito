@@ -23,7 +23,6 @@ class ModalidadeController extends Controller
        try {
             
             $cacheKey = 'modalidades_todas';
-
             $modalidades = Cache::remember($cacheKey, now()->addMinutes(10), function () {
                 return $this->modalidadeService->getAllModalidade();
             });
@@ -51,11 +50,17 @@ class ModalidadeController extends Controller
     public function show($id)
     {
         try {
-            $modalidade = $this->modalidadeService->getModalidadeById($id);
+
+            $cacheKey = "modalidade_{$id}";
+            $modalidade = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id) {
+                return $this->modalidadeService->getModalidadeById($id);
+            }); 
+            
             return response()->json([
                 'success' => true,
                 'data' => new ModalidadeResource($modalidade)
             ], Response::HTTP_OK);
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -66,8 +71,10 @@ class ModalidadeController extends Controller
     public function store(StoreModalidadeRequest $request)
     {
         try {
+
             $validateData = $request->validated();
             $modalidade = $this->modalidadeService->createModalidade($validateData);
+
             Cache::forget('modalidades_todas');
 
             return response()->json([
@@ -85,8 +92,13 @@ class ModalidadeController extends Controller
     public function update(UpdateModalidadeRequest $request, $id)
     {
         try {
+
             $validatedData = $request->validated();
             $modalidade = $this->modalidadeService->updateModalidade($id, $validatedData);
+
+            Cache::forget("modalidade_{$id}");
+            Cache::forget('modalidades_todas');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Modalidade atualizada com sucesso!',
@@ -102,7 +114,12 @@ class ModalidadeController extends Controller
     public function destroy($id)
     {
        try {
+
             $this->modalidadeService->deleteModalidade($id);
+
+            Cache::forget("modalidade_{$id}");
+            Cache::forget('modalidades_todas');
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Modalidade excluída com sucesso.'
