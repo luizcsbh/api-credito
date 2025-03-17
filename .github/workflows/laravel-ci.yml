@@ -25,6 +25,16 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
     steps:
       - name: Clonar Repositório
         uses: actions/checkout@v4
@@ -33,7 +43,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, pdo, mysql, zip
+          extensions: mbstring, pdo, mysql, zip, redis
           coverage: none
 
       - name: Instalar Dependências
@@ -49,6 +59,11 @@ jobs:
           echo "DB_DATABASE=laravel_test" >> .env
           echo "DB_USERNAME=root" >> .env
           echo "DB_PASSWORD=root" >> .env
+          echo "REDIS_HOST=127.0.0.1" >> .env
+          echo "REDIS_PORT=6379" >> .env
+          echo "CACHE_DRIVER=redis" >> .env
+          echo "SESSION_DRIVER=redis" >> .env
+          echo "QUEUE_CONNECTION=redis" >> .env
 
       - name: Rodar Migrations e Seeders
         run: php artisan migrate --seed --force
