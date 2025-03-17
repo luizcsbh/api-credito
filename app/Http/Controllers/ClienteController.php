@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
 use App\Services\ClienteService;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ClienteResource;
 use App\Http\Requests\{StoreClienteRequest, UpdateClienteRequest};
-use Illuminate\Support\Facades\Cache;
 
 class ClienteController extends Controller
 {
@@ -49,7 +49,12 @@ class ClienteController extends Controller
     public function show($id)
     {
         try {
-            $cliente = $this->clienteService->getClienteById($id);
+            $cacheKey = 'cliente_{$id}';
+
+            $cliente = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id) {
+                return $this->clienteService->getClienteById($id);
+            });
+           
             return response()->json([
                 'success' => true,
                 'data' => new ClienteResource($cliente)
@@ -67,6 +72,7 @@ class ClienteController extends Controller
         try {
             $validateData = $request->validated();
             $cliente = $this->clienteService->createCliente($validateData);
+
             Cache::forget('clientes_todos');
 
             return response()->json([
@@ -86,6 +92,10 @@ class ClienteController extends Controller
         try {
             $validatedData = $request->validated();
             $cliente = $this->clienteService->updateCliente($id, $validatedData);
+
+            Cache::forget('clientes_{$id}');
+            Cache::forget('clientes_todos');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Cliente atualizado com sucesso!',
@@ -103,6 +113,9 @@ class ClienteController extends Controller
     {
         try {
             $this->clienteService->deleteClienteWithAssociations($id);
+
+            Cache::forget('clientes_{$id}');
+            Cache::forget('clientes_todos');
 
             return response()->json([
                 'success' => true,
