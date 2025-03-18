@@ -11,8 +11,7 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "predis/predis": "^2.3",
-        "talleu/php-redis-om": "^0.3.4"
+        "predis/predis": "^2.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
